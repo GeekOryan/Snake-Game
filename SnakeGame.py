@@ -11,16 +11,19 @@ GREEN = (0, 255, 0)
 BLACK = (0, 0, 0)
 RED = (255, 0, 0)
 
+WIDTH = 600
+HEIGHT = 400
 block_size = 20
 snake = [(100, 100)]
 direction = (block_size, 0)
 
 def spawn_food():
-    x = random.randrange(0, 600, block_size)
-    y = random.randrange(0, 400, block_size)
+    x = random.randrange(0, WIDTH, block_size)
+    y = random.randrange(0, HEIGHT, block_size)
     return (x, y)
 
 food = spawn_food()
+game_over = False
 
 running = True
 while running:
@@ -37,14 +40,20 @@ while running:
             elif event.key == pygame.K_DOWN:
                 direction = (0, block_size)
     
-    head_x, head_y = snake[0]
-    new_head = (head_x + direction[0], head_y + direction[1])
-    snake.insert(0, new_head)
-    
-    if new_head == food:
-        food = spawn_food()
-    else:
-        snake.pop()
+    if not game_over:
+        head_x, head_y = snake[0]
+        new_head = (head_x + direction[0], head_y + direction[1])
+        
+        if new_head[0] < 0 or new_head[0] >= WIDTH or new_head[1] < 0 or new_head[1] >= HEIGHT:
+            game_over = True
+        elif new_head in snake:
+            game_over = True
+        else:
+            snake.insert(0, new_head)
+            if new_head == food:
+                food = spawn_food()
+            else:
+                snake.pop()
     
     screen.fill(BLACK)
     for segment in snake:
