@@ -9,9 +9,9 @@ clock = pygame.time.Clock()
 GREEN = (0, 255, 0)
 BLACK = (0, 0, 0)
 
-x = 100
-y = 100
-speed = 20
+block_size = 20
+snake = [(100, 100)]
+direction = (block_size, 0)
 
 running = True
 while running:
@@ -20,16 +20,22 @@ while running:
             running = False
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_RIGHT:
-                x += speed
+                direction = (block_size, 0)
             elif event.key == pygame.K_LEFT:
-                x -= speed
+                direction = (-block_size, 0)
             elif event.key == pygame.K_UP:
-                y -= speed
+                direction = (0, -block_size)
             elif event.key == pygame.K_DOWN:
-                y += speed
+                direction = (0, block_size)
+    
+    head_x, head_y = snake[0]
+    new_head = (head_x + direction[0], head_y + direction[1])
+    snake.insert(0, new_head)
+    snake.pop()
     
     screen.fill(BLACK)
-    pygame.draw.rect(screen, GREEN, (x, y, 20, 20))
+    for segment in snake:
+        pygame.draw.rect(screen, GREEN, (segment[0], segment[1], block_size, block_size))
     pygame.display.update()
     clock.tick(10)
 
